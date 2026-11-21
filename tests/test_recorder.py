@@ -77,6 +77,19 @@ class RecorderTests(unittest.TestCase):
         self.assertEqual(len(first), 32)
         self.assertEqual(load_key(key_path), first)
 
+    def test_key_trailing_whitespace_byte_survives(self) -> None:
+        # Regression: a random key may end in a byte that bytes.strip() eats.
+        for tail in (b"\n", b"\x0c", b" ", b"\r", b"\t"):
+            path = self.root / ("key-%02x.bin" % tail[0])
+            path.write_bytes(b"k" * 31 + tail)
+            self.assertEqual(len(load_key(path)), 32, tail)
+            self.assertEqual(load_key(path)[-1:], tail, tail)
+
+    def test_key_file_with_trailing_newline_loads(self) -> None:
+        path = self.root / "textkey.bin"
+        path.write_bytes(b"k" * 32 + b"\n")
+        self.assertEqual(load_key(path), b"k" * 32)
+
     def test_default_key_when_missing(self) -> None:
         self.assertEqual(load_key(self.root / "missing.bin", create=False), b"navhack-default")
 

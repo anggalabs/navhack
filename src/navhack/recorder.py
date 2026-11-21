@@ -23,6 +23,7 @@ from . import util
 from . import platform_compat as plat
 
 GENESIS = "0" * 64
+KEY_BYTES = 32
 
 
 class Recorder:
@@ -107,14 +108,23 @@ class Recorder:
 
 
 def load_key(path: Path, create: bool = True) -> bytes:
+    """Return the 32-byte engagement key.
+
+    The file is raw binary.  ``bytes.strip()`` must not be applied blindly: a
+    random key can legitimately end in a whitespace byte (``\\n``, ``\\x0c``,
+    space…), and stripping it made the key unstable between calls.
+    """
     path = Path(path)
     if path.exists():
-        raw = path.read_bytes().strip()
-        if raw:
+        raw = path.read_bytes()
+        if len(raw) == KEY_BYTES:
             return raw
+        trimmed = raw.strip()
+        if trimmed:
+            return trimmed
     if not create:
         return b"navhack-default"
-    key = os.urandom(32)
+    key = os.urandom(KEY_BYTES)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_bytes(key)
     try:
