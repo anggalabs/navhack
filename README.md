@@ -1,5 +1,9 @@
 # navhack
 
+[![ci](https://github.com/anggalabs/navhack/actions/workflows/ci.yml/badge.svg)](https://github.com/anggalabs/navhack/actions/workflows/ci.yml)
+[![python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue)](pyproject.toml)
+[![license MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+
 **Fog-of-war attack navigation.** recon → chart → plan → prove → report.
 
 navhack keeps a probabilistic world model of the target as a *map*: hosts,
