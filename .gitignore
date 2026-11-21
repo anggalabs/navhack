@@ -1,0 +1,21 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+.engagements/
+.navhack/
+*.db
+*.db-wal
+*.db-shm
+navhack.log
+.DS_Store
+
+# legacy scratch dirs created with 0700 on Windows
+probe-*/
+tmp*/
+navhack-selftest-*/
+test-out.txt
