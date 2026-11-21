@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import unittest
 
-from navhack import httpio, util, verifier
+from navhack import httpio, platform_compat as plat, util, verifier
 from navhack.models import Budget, Finding
 from navhack.policy import Policy
 from navhack.scope import Scope
@@ -115,7 +115,9 @@ class HttpTests(unittest.TestCase):
         self.assertTrue(ok)
 
     def test_probe_tcp_closed_port(self) -> None:
-        ok, _elapsed, _error = httpio.probe_tcp("127.0.0.1", 1, policy=policy_for(), timeout=0.3)
+        # A freshly released ephemeral port is deterministic across runners.
+        closed = plat.free_port()
+        ok, _elapsed, _error = httpio.probe_tcp("127.0.0.1", closed, policy=policy_for(), timeout=0.5)
         self.assertFalse(ok)
 
     def test_5xx_aborts_policy(self) -> None:
